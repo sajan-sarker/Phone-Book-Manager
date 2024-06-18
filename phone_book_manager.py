@@ -38,28 +38,89 @@ def add_data():
             writer.writerow([serial_no, fname, lname, cell, email, address])
         
         print("Data added successfully.")
-        input("\nPress any key to continue.")
     else:
         print("Data not saved.")
-        input("\nPress any key to continue.")
+    
+    input("\nPress any key to continue.")
 
 def search_data():
     clear_screen()
-    print("Execute add search function.")
+
+    interrupt = input ("Enter the first name to search: ")
+    with open("contact.csv", 'r') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            if row[1].lower() == interrupt.lower():
+                print(f"Name: {row[1]} {row[2]}")
+                print(f"Number: {row[3]}")
+                print(f"Email: {row[4]}")
+                print(f"Address: {row[5]}")
+                break
+        else:
+            print("Data not found.")
+
+    input("\nPress any key to continue.")
 
 def update_data():
     clear_screen()
-    print("Execute add update function.")
+
+    interrupt = input("Enter the first name to update: ")
+    with open("contact.csv", 'r') as file:
+        reader = csv.reader(file)
+        data = []
+        for row in reader:
+            if row[1].lower() == interrupt.lower():
+                print(f"Name: {row[1]} {row[2]}")
+                print(f"Number: {row[3]}")
+                print(f"Email: {row[4]}")
+                print(f"Address: {row[5]}")
+                print("\n")
+                fname= input("First Name: ")
+                lname= input("Last Name: ")
+                cell = input("Number: ")
+                email = input("Email: ")
+                address = input("Address: ")
+                data.append([row[0], fname, lname, cell, email, address])
+            else:
+                data.append(row)
+        
+    with open("contact.csv", 'w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(data)
+
+    input("\nPress any key to continue.")
 
 def delete_data():
     clear_screen()
-    print("Execute add delete function.")
+
+    entries = []
+    if os.path.exists("contact.csv") and os.stat("contact.csv").st_size != 0:
+        with open("contact.csv", 'r') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                entries.append(row)
+
+    interrupt = input("Enter the first name to delete: ").strip().lower()
+    
+    entries_to_keep = [entry for entry in entries if entry[1] != interrupt]
+    if len(entries) == len(entries_to_keep):
+        print("Data not found.")
+    else:
+        for index, entry in enumerate(entries_to_keep, start = 0):
+            entry[0] = index + 1
+        with open("contact.csv", 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(entries_to_keep)
+
+    print("Data deleted successfully.")
+    input("\nPress any key to continue.")
 
 def print_data():
     clear_screen()
     print("Execute add print function.")
+    input("\nPress any key to continue.")
 
-def main_screen():
+def main():
     while True:
         clear_screen()
         print("Phone Book Manager \n")
@@ -70,26 +131,22 @@ def main_screen():
         print("4. Delete data?")
         print("5. View data?")
         print("\nPress 0 for exit.")
-        interupt = int(input("What you want to do? (1/2/3/4): "))
+        interupt = input("What you want to do? ")
         match interupt:
-            case 1:
+            case '1':
                 add_data()
-            case 2:
+            case '2':
                 search_data()
-            case 3:
+            case '3':
                 update_data()
-            case 4:
+            case '4':
                 delete_data()
-            case 5:
+            case '5':
                 print_data()
-            case 0:
+            case '0':
                 sys.exit()
             case _:
                 print("Wrong entry: Try again!")
-
-def main():
-    main_screen()
-
 
 if __name__ == "__main__":
     main()
