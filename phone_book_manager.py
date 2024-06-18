@@ -41,7 +41,7 @@ def add_data():
     else:
         print("Data not saved.")
     
-    input("\nPress any key to continue.")
+    input("\nPress Enter to continue.")
 
 def search_data():
     clear_screen()
@@ -59,7 +59,7 @@ def search_data():
         else:
             print("Data not found.")
 
-    input("\nPress any key to continue.")
+    input("\nPress Enter to continue.")
 
 def update_data():
     clear_screen()
@@ -88,7 +88,7 @@ def update_data():
         writer = csv.writer(file)
         writer.writerows(data)
 
-    input("\nPress any key to continue.")
+    input("\nPress Enter to continue.")
 
 def delete_data():
     clear_screen()
@@ -100,25 +100,40 @@ def delete_data():
             for row in reader:
                 entries.append(row)
 
-    interrupt = input("Enter the first name to delete: ").strip().lower()
+    interrupt = input("Enter the first name to delete: ")
     
-    entries_to_keep = [entry for entry in entries if entry[1] != interrupt]
+    entries_to_keep = [entry for entry in entries if entry[1].lower() != interrupt.lower()]
     if len(entries) == len(entries_to_keep):
         print("Data not found.")
     else:
-        for index, entry in enumerate(entries_to_keep, start = 0):
-            entry[0] = index + 1
-        with open("contact.csv", 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerows(entries_to_keep)
-
-    print("Data deleted successfully.")
-    input("\nPress any key to continue.")
+        interrupt = input("Do you want to delete the contact information? (y/n): ")
+        if interrupt.lower() == 'y':
+            for index, entry in enumerate(entries_to_keep, start = 0):
+                entry[0] = index + 1
+            with open("contact.csv", 'w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerows(entries_to_keep)
+            print("Data deleted successfully.")
+        else:
+            print("Data not deleted.")
+    
+    input("\nPress Enter to continue.")
 
 def print_data():
     clear_screen()
-    print("Execute add print function.")
-    input("\nPress any key to continue.")
+    
+    with open("contact.csv", 'r') as file:
+        reader = csv.reader(file)
+        serial = 1
+        for row in reader:
+            print(f"Serial: {serial}")
+            print(f"Name: {row[1]} {row[2]}")
+            print(f"Number: {row[3]}")
+            print(f"Email: {row[4]}")
+            print(f"Address: {row[5]}")
+            serial += 1
+            print("\n")
+    input("Press Enter to continue.")
 
 def main():
     while True:
